@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#101828">
+  <title>StockPilot — Inventory Workspace</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand"><div class="brand-mark">S</div><div><strong>stockpilot</strong><span>INVENTORY WORKSPACE</span></div></div>
+    <div class="workspace-label">WORKSPACE</div>
+    <nav class="nav">
+      <button class="nav-item active" data-view="overview"><span>◫</span> Overview</button>
+      <button class="nav-item" data-view="products"><span>▦</span> Products <b id="navProductCount">0</b></button>
+      <button class="nav-item" data-view="orders"><span>⇄</span> Order queue <b id="navOrderCount">0</b></button>
+      <button class="nav-item" data-view="alerts"><span>♧</span> Stock alerts</button>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="help-card"><div class="help-icon">✦</div><strong>Inventory, in control.</strong><p>Keep your stock visible, organized and ready to move.</p></div>
+      <div class="profile"><div class="avatar">SP</div><div><strong>Workspace Admin</strong><span>Local demo workspace</span></div><span class="online-dot"></span></div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <button class="mobile-menu" id="mobileMenu" aria-label="Open menu">☰</button>
+      <div class="breadcrumbs"><span>Workspace</span><i>/</i><strong id="crumb">Overview</strong></div>
+      <div class="top-actions"><span class="status-pill"><span class="pulse"></span> System operational</span><button class="icon-button" id="refreshBtn" title="Refresh">↻</button><button class="primary-btn" id="topAddBtn">＋ Add product</button></div>
+    </header>
+
+    <section class="view active" id="view-overview">
+      <div class="page-heading"><div><div class="eyebrow">MONDAY, YOUR INVENTORY AT A GLANCE</div><h1>Good to see you<span class="heading-dot">.</span></h1><p>Here’s what’s happening across your inventory today.</p></div><div class="heading-date" id="todayDate"></div></div>
+      <div class="stat-grid">
+        <article class="stat-card"><div class="stat-top"><span>Total products</span><span class="stat-icon violet">▦</span></div><div class="stat-value" id="statProducts">0</div><div class="stat-foot"><span class="neutral-dot"></span> Active catalog items</div></article>
+        <article class="stat-card"><div class="stat-top"><span>Units in stock</span><span class="stat-icon blue">▤</span></div><div class="stat-value" id="statUnits">0</div><div class="stat-foot"><span class="green-text">●</span> Across all products</div></article>
+        <article class="stat-card"><div class="stat-top"><span>Inventory value</span><span class="stat-icon green">₹</span></div><div class="stat-value" id="statValue">₹0</div><div class="stat-foot"><span class="neutral-dot"></span> Based on current stock</div></article>
+        <article class="stat-card"><div class="stat-top"><span>Low-stock items</span><span class="stat-icon orange">!</span></div><div class="stat-value" id="statLow">0</div><div class="stat-foot"><span class="orange-text">● Needs attention</span></div></article>
+      </div>
+      <div class="content-grid">
+        <section class="panel inventory-panel"><div class="panel-heading"><div><h2>Inventory overview</h2><p>Recently added products and stock status.</p></div><button class="text-btn" data-goto="products">View all products <span>→</span></button></div><div class="table-wrap"><table><thead><tr><th>PRODUCT</th><th>PRODUCT ID</th><th>QUANTITY</th><th>UNIT PRICE</th><th>STATUS</th></tr></thead><tbody id="overviewTable"></tbody></table></div><div class="empty-state hidden" id="overviewEmpty"><div class="empty-icon">▦</div><strong>Your inventory starts here</strong><p>Add your first product to see your stock at a glance.</p><button class="primary-btn" data-open-modal>＋ Add first product</button></div></section>
+        <section class="panel alert-panel"><div class="panel-heading"><div><h2>Needs attention</h2><p>Products at or below their threshold.</p></div><span class="count-badge" id="alertCount">0</span></div><div class="alert-list" id="overviewAlerts"></div><div class="empty-state compact" id="alertsClear"><div class="success-check">✓</div><strong>All looking good</strong><p>No products need restocking right now.</p></div><button class="panel-footer-btn" data-goto="alerts">View stock alerts <span>→</span></button></section>
+      </div>
+      <section class="panel activity-panel"><div class="panel-heading"><div><h2>Quick actions</h2><p>Common tasks, right where you need them.</p></div></div><div class="quick-actions"><button class="quick-action" data-open-modal><span class="qa-icon purple">＋</span><span><strong>Add a product</strong><small>Create a new catalog item</small></span><span class="qa-arrow">↗</span></button><button class="quick-action" id="quickStockIn"><span class="qa-icon green">↓</span><span><strong>Stock in</strong><small>Record incoming inventory</small></span><span class="qa-arrow">↗</span></button><button class="quick-action" id="quickOrder"><span class="qa-icon blue">⇄</span><span><strong>New order</strong><small>Add a request to the queue</small></span><span class="qa-arrow">↗</span></button></div></section>
+    </section>
+
+    <section class="view" id="view-products">
+      <div class="page-heading"><div><div class="eyebrow">CATALOG MANAGEMENT</div><h1>Products<span class="heading-dot">.</span></h1><p>Manage your catalog and keep every item accounted for.</p></div><button class="primary-btn large" data-open-modal>＋ Add product</button></div>
+      <div class="toolbar"><div class="search-box"><span>⌕</span><input id="searchInput" type="search" placeholder="Search by product name, ID or category…"></div><select id="sortSelect" aria-label="Sort products"><option value="id">Sort: Product ID</option><option value="name">Sort: Name</option><option value="quantity">Sort: Quantity</option></select></div>
+      <section class="panel"><div class="panel-heading"><div><h2>All products <span class="inline-count" id="productTableCount">0</span></h2><p>Your complete inventory catalog.</p></div><span class="subtle-label">LIVE INVENTORY</span></div><div class="table-wrap"><table><thead><tr><th>PRODUCT</th><th>ID</th><th>CATEGORY</th><th>QTY</th><th>PRICE</th><th>STOCK STATUS</th><th>ACTIONS</th></tr></thead><tbody id="productsTable"></tbody></table></div><div class="empty-state hidden" id="productsEmpty"><div class="empty-icon">⌕</div><strong>No products found</strong><p>Try another search, or add a new product to your catalog.</p><button class="primary-btn" data-open-modal>＋ Add product</button></div></section>
+    </section>
+
+    <section class="view" id="view-orders">
+      <div class="page-heading"><div><div class="eyebrow">FIRST IN, FIRST OUT</div><h1>Order queue<span class="heading-dot">.</span></h1><p>Manage pending orders using a FIFO linked-list queue.</p></div><button class="primary-btn large" id="newOrderBtn">＋ Add order</button></div>
+      <div class="notice"><span>ⓘ</span><div><strong>FIFO processing</strong><p>Orders are processed in the order they arrive. Processing an order reduces the corresponding product's stock.</p></div></div>
+      <section class="panel"><div class="panel-heading"><div><h2>Pending orders <span class="inline-count" id="orderCount">0</span></h2><p>Oldest order is processed first.</p></div><button class="secondary-btn" id="processOrderBtn">Process oldest order →</button></div><div class="table-wrap"><table><thead><tr><th>ORDER</th><th>PRODUCT</th><th>PRODUCT ID</th><th>QUANTITY</th><th>QUEUE POSITION</th></tr></thead><tbody id="ordersTable"></tbody></table></div><div class="empty-state" id="ordersEmpty"><div class="empty-icon">⇄</div><strong>No pending orders</strong><p>Create an order to see the FIFO queue in action.</p><button class="primary-btn" id="emptyOrderBtn">＋ Add order</button></div></section>
+    </section>
+
+    <section class="view" id="view-alerts">
+      <div class="page-heading"><div><div class="eyebrow">RESTOCKING CENTER</div><h1>Stock alerts<span class="heading-dot">.</span></h1><p>Stay ahead of shortages before they affect operations.</p></div><button class="secondary-btn" data-goto="products">Manage products →</button></div>
+      <div class="alert-summary"><div class="alert-summary-icon">!</div><div><strong id="alertSummaryTitle">No stock alerts</strong><p id="alertSummaryText">Your inventory is within its configured thresholds.</p></div></div>
+      <section class="panel"><div class="panel-heading"><div><h2>Restocking needed</h2><p>Products where quantity is less than or equal to minimum threshold.</p></div></div><div class="table-wrap"><table><thead><tr><th>PRODUCT</th><th>ID</th><th>AVAILABLE</th><th>MINIMUM</th><th>SHORTFALL</th><th>ACTION</th></tr></thead><tbody id="alertsTable"></tbody></table></div><div class="empty-state" id="alertsPageEmpty"><div class="success-check">✓</div><strong>No restocking needed</strong><p>All products are above their minimum stock threshold.</p></div></section>
+    </section>
+    <footer class="footer"><span>StockPilot <span>·</span> Inventory Management System</span><span>Built with C · Linked Lists · FIFO Queue</span></footer>
+  </main>
+</div>
+
+<div class="modal-backdrop hidden" id="productModal"><section class="modal" role="dialog" aria-modal="true" aria-labelledby="productModalTitle"><div class="modal-head"><div><div class="eyebrow">PRODUCT CATALOG</div><h2 id="productModalTitle">Add a product</h2><p>Enter the details for this inventory item.</p></div><button class="close-btn" data-close-modal aria-label="Close">×</button></div><form id="productForm"><div class="form-grid"><label>Product ID <input type="number" name="id" id="productId" min="1" required placeholder="e.g. 101"></label><label>Product name <input name="name" id="productName" maxlength="90" required placeholder="e.g. Arduino Uno"></label><label>Category <input name="category" id="productCategory" maxlength="50" placeholder="e.g. Electronics"></label><label>Unit price (₹) <input type="number" name="price" id="productPrice" min="0" step="0.01" required placeholder="0.00"></label><label>Opening quantity <input type="number" name="quantity" id="productQuantity" min="0" required placeholder="0"></label><label>Minimum threshold <input type="number" name="threshold" id="productThreshold" min="0" value="5" required></label></div><div class="form-note">A low-stock alert appears when available quantity is at or below the threshold.</div><div class="modal-actions"><button type="button" class="secondary-btn" data-close-modal>Cancel</button><button type="submit" class="primary-btn" id="saveProductBtn">Save product</button></div><p class="form-error hidden" id="productError"></p></form></section></div>
+
+<div class="modal-backdrop hidden" id="stockModal"><section class="modal small-modal" role="dialog" aria-modal="true"><div class="modal-head"><div><div class="eyebrow" id="stockEyebrow">STOCK MOVEMENT</div><h2 id="stockTitle">Stock in</h2><p id="stockDescription">Record an incoming stock movement.</p></div><button class="close-btn" data-close-stock>×</button></div><form id="stockForm"><label>Product <select id="stockProduct" required></select></label><label>Quantity <input type="number" id="stockQuantity" min="1" step="1" required placeholder="Enter quantity"></label><div class="modal-actions"><button type="button" class="secondary-btn" data-close-stock>Cancel</button><button type="submit" class="primary-btn">Confirm movement</button></div><p class="form-error hidden" id="stockError"></p></form></section></div>
+
+<div class="modal-backdrop hidden" id="orderModal"><section class="modal small-modal" role="dialog" aria-modal="true"><div class="modal-head"><div><div class="eyebrow">ORDER MANAGEMENT</div><h2>Add an order</h2><p>Add an order to the end of the FIFO queue.</p></div><button class="close-btn" data-close-order>×</button></div><form id="orderForm"><label>Product <select id="orderProduct" required></select></label><label>Order quantity <input type="number" id="orderQuantity" min="1" step="1" required placeholder="Enter quantity"></label><div class="modal-actions"><button type="button" class="secondary-btn" data-close-order>Cancel</button><button type="submit" class="primary-btn">Add to queue</button></div><p class="form-error hidden" id="orderError"></p></form></section></div>
+<div class="toast-region" id="toastRegion" aria-live="polite"></div>
+<script src="/app.js"></script>
+</body></html>
